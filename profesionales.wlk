@@ -1,8 +1,16 @@
 import empresas.*
 import universidad.*
+import solicitantes.*
+
 
 class ProfesionalesVinculados {
-  var property universidadQueEstudio
+  var universidadQueEstudio
+  
+  method universidadQueEstudio() = universidadQueEstudio
+  
+  method universidadQueEstudio(unaUniversidad) {
+    universidadQueEstudio = unaUniversidad
+  }
   
   method honorariosPorHora() = universidadQueEstudio.honorariosPorHora()
   
@@ -10,7 +18,13 @@ class ProfesionalesVinculados {
 }
 
 class ProfesionalesAsociadosAlLitoral {
-  var property universidadQueEstudio
+  var universidadQueEstudio
+  
+  method universidadQueEstudio() = universidadQueEstudio
+  
+  method universidadQueEstudio(unaUniversidad) {
+    universidadQueEstudio = unaUniversidad
+  }
   
   method honorariosPorHora() = 3000
   
@@ -20,5 +34,15 @@ class ProfesionalesAsociadosAlLitoral {
 class ProfesionalesLibres {
   var property universidadQueEstudio
   var property honorariosPorHora
-  var property trabajaEn
+  const trabajaEn = #{}
+  
+  method trabajaEn() = trabajaEn
+  
+  method agregarProvincia(unaProvincia) {
+    trabajaEn.add(unaProvincia)
+  }
+  
+  method quitarProvincia(unaProvincia) {
+    trabajaEn.remove(unaProvincia)
+  }
 }

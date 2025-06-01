@@ -1,5 +1,7 @@
 import profesionales.*
 import universidad.*
+import solicitantes.*
+
 
 class Empresa {
   const profesionalesContratados = []
@@ -8,8 +10,6 @@ class Empresa {
   method contratarProfesional(unProfesional) {
     profesionalesContratados.add(unProfesional)
   }
-
-  method profesionalesContratados() = profesionalesContratados
   
   method cuantosEstudiaronEn(unaUniversidad) = profesionalesContratados.count(
     { p => p.universidadQueEstudio() == unaUniversidad }
@@ -29,5 +29,10 @@ class Empresa {
   
   method esDeGenteAcotada() = profesionalesContratados.all(
     { p => p.trabajaEn().size() <= 3 }
+  )
+  
+  //ETAPA 2 !!!!!!!!!!!!!!!!!!!
+  method puedeSatisfacerA(unSolicitante) = profesionalesContratados.any(
+    { p => unSolicitante.puedeSerAtendidoPor(p) }
   )
 }

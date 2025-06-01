@@ -1,6 +1,7 @@
 import profesionales.*
 import empresas.*
 import universidad.*
+import solicitantes.*
 
 describe "test de servicios profesionales etapa 1" {
   const sanMartin = new Universidad(
@@ -34,7 +35,9 @@ describe "test de servicios profesionales etapa 1" {
     trabajaEn = #{"Santa Fe", "Entre Rios"}
   )
   const empresa1 = new Empresa(honorariosDeReferencia = 3500)
-
+  const persona1 = new Persona(provinciaDondeVive = "Santa Fe")
+  const persona2 = new Persona(provinciaDondeVive = "Salta")
+  
   method initialize() {
     empresa1.contratarProfesional(luciana)
     empresa1.contratarProfesional(rocio)
@@ -42,21 +45,52 @@ describe "test de servicios profesionales etapa 1" {
     empresa1.contratarProfesional(juana)
   }
   
+  //TEST ETAPA 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!
   test "dos de sus profesionales estudiaron en Rosario, uno en Hurlingham, ninguno en San Martín." {
     assert.equals(2, empresa1.cuantosEstudiaronEn(rosario))
     assert.equals(1, empresa1.cuantosEstudiaronEn(hurlingham))
     assert.equals(0, empresa1.cuantosEstudiaronEn(sanMartin))
   }
+  
   test "como profesionales caros, solamente a Rocío" {
     assert.that(empresa1.profesionalesCaros().contains(rocio))
   }
+  
   test "como universidades formadoras, a las de Rosario, Corrientes y Hurlingham." {
-    assert.equals(#{rosario, hurlingham, corrientes}, empresa1.universidadesFormadoras())
+    assert.equals(
+      #{rosario, hurlingham, corrientes},
+      empresa1.universidadesFormadoras()
+    )
   }
+  
   test "como profesional más barato a Juana" {
     assert.equals(juana, empresa1.profesionalMasBarato())
   }
+  
   test "la empresa es de gente acotada" {
     assert.that(empresa1.esDeGenteAcotada())
+  }
+  
+  //TEST ETAPA 2 !!!!!!!!!!!!!!!!!!!!
+  test "la persona 1 puede ser satisfacida en la empresa1" {
+    assert.that(empresa1.puedeSatisfacerA(persona1))
+  }
+  
+  test "la persona 2 no puede ser satisfacida en la empresa1" {
+    assert.notThat(empresa1.puedeSatisfacerA(persona2))
+  }
+  
+  test "la persona1 puede ser atendida por rocio, luciana, juana y melina" {
+    assert.that(persona1.puedeSerAtendidoPor(rocio))
+    assert.that(persona1.puedeSerAtendidoPor(luciana))
+    assert.that(persona1.puedeSerAtendidoPor(juana))
+    assert.that(persona1.puedeSerAtendidoPor(melina))
+  }
+  
+  test "la persona2 no puede ser atendida por ninguno de los profesionales" {
+    assert.notThat(persona2.puedeSerAtendidoPor(juana))
+    assert.notThat(persona2.puedeSerAtendidoPor(melina))
+    assert.notThat(persona2.puedeSerAtendidoPor(rocio))
+    assert.notThat(persona2.puedeSerAtendidoPor(luciana))
   }
 }
