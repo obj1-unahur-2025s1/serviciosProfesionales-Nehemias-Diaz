@@ -1,0 +1,125 @@
+import profesionales.*
+import empresas.*
+import universidad.*
+import solicitantes.*
+
+describe "test de servicios profesionales etapa 1" {
+  const sanMartin = new Universidad(
+    provincia = "Buenos Aires",
+    honorariosPorHora = 3500
+  )
+  const rosario = new Universidad(
+    provincia = "Santa Fe",
+    honorariosPorHora = 2800
+  )
+  const corrientes = new Universidad(
+    provincia = "Corrientes",
+    honorariosPorHora = 4200
+  )
+  const hurlingham = new Universidad(
+    provincia = "Buenos Aires",
+    honorariosPorHora = 8800
+  )
+  const juana = new ProfesionalesVinculados(universidadQueEstudio = rosario)
+  const melina = new ProfesionalesAsociadosAlLitoral(
+    universidadQueEstudio = corrientes
+  )
+  const rocio = new ProfesionalesLibres(
+    universidadQueEstudio = hurlingham,
+    honorariosPorHora = 5000,
+    trabajaEn = #{"Santa Fe", "Cordoba", "Buenos Aires"}
+  )
+  const luciana = new ProfesionalesLibres(
+    universidadQueEstudio = rosario,
+    honorariosPorHora = 3200,
+    trabajaEn = #{"Santa Fe", "Entre Rios"}
+  )
+  const empresa1 = new Empresa(honorariosDeReferencia = 3500)
+  const persona1 = new Persona(provinciaDondeVive = "Santa Fe")
+  const persona2 = new Persona(provinciaDondeVive = "Salta")
+  
+  method initialize() {
+    empresa1.contratarProfesional(luciana)
+    empresa1.contratarProfesional(rocio)
+    empresa1.contratarProfesional(melina)
+    empresa1.contratarProfesional(juana)
+  }
+  
+  //TEST ETAPA 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!
+  test "Dos de sus profesionales estudiaron en Rosario, uno en Hurlingham, ninguno en San Martín." {
+    assert.equals(2, empresa1.cuantosEstudiaronEn(rosario))
+    assert.equals(1, empresa1.cuantosEstudiaronEn(hurlingham))
+    assert.equals(0, empresa1.cuantosEstudiaronEn(sanMartin))
+  }
+  
+  test "como profesionales caros, solamente a Rocío" {
+    assert.that(empresa1.profesionalesCaros().contains(rocio))
+  }
+  
+  test "como universidades formadoras, a las de Rosario, Corrientes y Hurlingham." {
+    assert.equals(
+      #{rosario, hurlingham, corrientes},
+      empresa1.universidadesFormadoras()
+    )
+  }
+  
+  test "como profesional más barato a Juana" {
+    assert.equals(juana, empresa1.profesionalMasBarato())
+  }
+  
+  test "la empresa es de gente acotada" {
+    assert.that(empresa1.esDeGenteAcotada())
+  }
+  
+  //TEST ETAPA 2 !!!!!!!!!!!!!!!!!!!!
+  test "la persona 1 puede ser satisfacida en la empresa1" {
+    assert.that(empresa1.puedeSatisfacerA(persona1))
+  }
+  
+  test "la persona 2 no puede ser satisfacida en la empresa1" {
+    assert.notThat(empresa1.puedeSatisfacerA(persona2))
+  }
+  
+  test "la persona1 puede ser atendida por rocio, luciana, juana y melina" {
+    assert.that(persona1.puedeSerAtendidoPor(rocio))
+    assert.that(persona1.puedeSerAtendidoPor(luciana))
+    assert.that(persona1.puedeSerAtendidoPor(juana))
+    assert.that(persona1.puedeSerAtendidoPor(melina))
+  }
+  
+  test "la persona2 no puede ser atendida por ninguno de los profesionales" {
+    assert.notThat(persona2.puedeSerAtendidoPor(juana))
+    assert.notThat(persona2.puedeSerAtendidoPor(melina))
+    assert.notThat(persona2.puedeSerAtendidoPor(rocio))
+    assert.notThat(persona2.puedeSerAtendidoPor(luciana))
+  }
+  
+  //TEST ETAPA 3 !!!!!!!!!!!!!!!!!!!
+  test "Juana cobra 5000 su importe y le dona la mitad a su universidad" {
+    juana.cobrarImporte(5000)
+    assert.equals(2500, rosario.donacionesRecibidas())
+  }
+  
+  test "Melina cobra su importe de 3000 y le dona todo a la asociacion de profesionales del litoral " {
+    melina.cobrarImporte(3000)
+    assert.equals(3000, asociacionProfesionalesDelLitoral.donacionesRecibidas())
+  }
+  
+  test "Luciana cobra 10000 de importe y se lo encanuta todo" {
+    luciana.cobrarImporte(10000)
+    assert.equals(10000, luciana.totalRecaudado())
+  }
+  
+  test "Luciana cobro su importe anterior, Rocio cobra 8000 de importe y Luciana le da 1000, Rocio se queda con 9000" {
+    luciana.cobrarImporte(10000)
+    rocio.cobrarImporte(8000)
+    luciana.pasarDineroA(rocio, 1000)
+    assert.equals(9000, rocio.totalRecaudado())
+  }
+  
+  //TEST ETAPA 4 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  test "La empresa1 le da un servicio a la persona1 y queda como cliente de la empresa1" {
+    empresa1.darServicio(persona1)
+    assert.that(empresa1.tieneDeClienteA(persona1))
+  }
+}

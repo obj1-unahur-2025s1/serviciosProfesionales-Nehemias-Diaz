@@ -10,4 +10,6 @@ class Universidad {
   method recibirDonacion(unaDonacion) {
     donacionesRecibidas += unaDonacion
   }
+
+  method donacionesRecibidas() = donacionesRecibidas
 }
